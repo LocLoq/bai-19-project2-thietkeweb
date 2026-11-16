@@ -1,0 +1,173 @@
+/*
+ * Unified positioning for the storefront campaign panel and contact rail.
+ * Floating Campaign desktop rail placement is measured at runtime from the
+ * real storefront content edge; this file only owns the shared rail gap.
+ */
+:root{--jh-floating-rail-gap:12px}
+
+.fixed-action-btn{bottom:110px}
+.fixed-action-btn .back-to-top{
+  position:static;
+  display:block;
+  width:40px;
+  height:40px;
+  margin:0 auto;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(8px);
+  transition:opacity .2s ease,transform .2s ease,visibility .2s ease;
+}
+.fixed-action-btn .back-to-top.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+@media (min-width:1400px){
+  .fixed-action-btn{right:var(--jh-floating-rail-gap)}
+  /* When the Chatwoot widget is open, position the chat holder so its right
+     edge aligns with the LEFT edge of the fixed-action-btn rail — the chat
+     opens to the left of the buttons instead of covering them (#2114).
+     Rail: right 12px (gap), width 50px -> left edge at 62px from viewport.
+     Desktop-only: mobile keeps its existing behavior unchanged.
+     !important: the SDK sets an inline `right` on the holder when it first
+     creates it; without !important our rule loses on the first open. */
+  body.jh-chatwoot-open .woot-widget-holder{
+    right:calc(var(--jh-floating-rail-gap) + 50px + 8px) !important;
+  }
+}
+
+/* Back-to-top leaves the social rail on narrow screens.
+   The four channels it used to sit beside now live in the nav's "Liên hệ" sheet
+   (snippets/navigation-mobile.liquid), which reads the SAME settings.
+   IMPORTANT: hiding the rail itself with `display:none` would take the button's
+   whole subtree with it — a descendant of a display:none element generates no
+   box at all, so the button measured 0x0 and was gone. The container therefore
+   stays in the layout as an inert anchor and only its channel list is hidden.
+   The button then returns to the base theme's own fixed positioning (it slides
+   in from the right on `.show`), so the controller in main-scripts.js.liquid
+   needs no change. Desktop is untouched: every rule below is inside this query. */
+/* ── Category menu (mobile): centre every icon + label in its own cell ────────
+   The menu is a two-column layout below 992px: the left 30% cell holds one row
+   per category, the right 70% holds the submenu. Rows were built as a column
+   flex with align-items:center, but two things still pushed the content left:
+     · .category-nav-icon carries `margin-right:10px` (from the icon stylesheet in
+       snippets/navigation-category.liquid) — an asymmetric margin inside a centred
+       flex row shifts the icon left by half of it (measured 6px). The base theme
+       zeroed this for `img` icons only, so the `svg` icons kept it.
+     · the label inherited `text-align:start`, so once it wrapped to two lines the
+       block stayed flush left while the icon above it was centred.
+   Both are neutralised here, scoped to the breakpoint that owns this layout and
+   to the menu's own container, so desktop (≥992px, a horizontal row menu) is
+   untouched. */
+@media (max-width:991px){
+  .fixed-action-btn{display:block}
+  .fixed-action-btn ul{display:none}
+  .fixed-action-btn .back-to-top{
+    position:fixed;
+    right:-80px;
+    bottom:75px;
+    z-index:2000;
+    transition:right .2s ease;
+  }
+  .fixed-action-btn .back-to-top.show{right:10px}
+
+    #navigation-mobile .navigation .mn-item > a{
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  #navigation-mobile .navigation .mn-item > a > .category-nav-icon{
+    margin-left:0;
+    margin-right:0;
+  }
+  #navigation-mobile .navigation .mn-item > a > img{
+    margin-left:auto;
+    margin-right:auto;
+  }
+  #navigation-mobile .navigation .mn-item > a > span{
+    text-align:center;
+  }
+}
+
+/* ── Contact sheet (mobile nav) ──────────────────────────────────────────────
+   Opens directly above the 50px mobile nav. Hidden by default via the markup's
+   `hidden` attribute AND a `pointer-events:none` guard, so a stale attribute can
+   never leave an invisible layer swallowing taps. `.is-open` is the only way in. */
+.jh-contact-sheet{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:50px;
+  z-index:9918;
+  background:#fff;
+  border-top:1px solid #eceff3;
+  border-radius:14px 14px 0 0;
+  box-shadow:0 -6px 20px rgba(0,0,0,.10);
+  padding:12px 12px 10px;
+  max-height:60vh;
+  overflow-y:auto;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(8px);
+  transition:opacity .2s ease,transform .2s ease,visibility .2s ease;
+}
+.jh-contact-sheet.is-open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+@media (min-width:992px){
+  .jh-contact-sheet{display:none}
+}
+.jh-contact-sheet__title{
+  margin:0 0 8px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:#5b6472;
+}
+.jh-contact-sheet__list{margin:0;padding:0;list-style:none}
+.jh-contact-sheet__item + .jh-contact-sheet__item{border-top:1px solid #f0f2f5}
+.jh-contact-sheet__item > a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:9px 6px;
+  min-height:44px;
+  color:#1d2129;
+  text-decoration:none;
+}
+.jh-contact-sheet__ico{
+  flex:0 0 34px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f4f6f8;
+}
+.jh-contact-sheet__ico img,.jh-contact-sheet__ico svg{width:100%;height:100%;display:block}
+.jh-contact-sheet__item--phone .jh-contact-sheet__ico{background:#d62828;color:#fff}
+.jh-contact-sheet__item--phone .jh-contact-sheet__ico svg{width:18px;height:18px}
+.jh-contact-sheet__item--zalo .jh-contact-sheet__ico{background:#008FE5}
+.jh-contact-sheet__tx{font-size:13.5px;font-weight:600;line-height:1.25}
+.jh-contact-sheet__sub{display:block;font-weight:400;color:#5b6472;font-size:11.5px}
+
+/* The nav item that owns the sheet must read as active while it is open. */
+.navigation-mobile .item.navigation-contact > button[aria-expanded="true"] .nav-icon,
+.navigation-mobile .item.navigation-contact > button[aria-expanded="true"] > span{
+  color:#BE1E2D;
+}
+
+/* Respect a reduced-motion preference: still opens/closes, just without motion. */
+@media (prefers-reduced-motion:reduce){
+  .jh-contact-sheet{transition:none;transform:none}
+}

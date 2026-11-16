@@ -1,0 +1,26 @@
+[data-jh-floating-campaign-root][hidden]{display:none!important}
+.jh-floating-campaign{--jh-fc-width:320px;--jh-fc-height:140px;--jh-fc-launcher-width:240px;--jh-fc-launcher-height:52px;--jh-fc-bottom:20px;position:fixed;left:12px;bottom:var(--jh-fc-bottom);/* Above the sticky header (#header z-index 3000, styles-new.scss.liquid) so a tall banner
+   extends over the header region; still below the mobile drawer (9999), mobile nav (11111)
+   and the modal blocker (999999999). */z-index:3500;/* Block flow instead of a two-row layout: with the previous panel row reserved while
+   the panel was `display:none`, an 8px strip stayed above the launcher and swallowed taps
+   without doing anything (issue #2506). */display:flex;flex-direction:column;align-items:flex-start;gap:0;max-width:calc(100vw - 24px);font-family:inherit;pointer-events:none}
+.jh-floating-campaign.is-ready{pointer-events:auto}
+.jh-floating-campaign__panel{position:relative;width:var(--jh-fc-width);height:var(--jh-fc-height);max-width:calc(100vw - 24px);max-height:calc(100vh - var(--jh-fc-bottom) - 12px);margin:0 0 8px;overflow:hidden;border:0;border-radius:0;background:transparent;box-shadow:none;opacity:0;transform:translateY(8px);transition:opacity .18s ease,transform .18s ease}
+.jh-floating-campaign.is-open .jh-floating-campaign__panel{opacity:1;transform:none}
+.jh-floating-campaign__frame{display:block;width:100%;height:100%;border:0;background:transparent;pointer-events:auto}
+.jh-floating-campaign__launcher{position:relative;width:var(--jh-fc-launcher-width);height:var(--jh-fc-launcher-height);max-width:calc(100vw - 24px);overflow:visible;background:transparent}
+.jh-floating-campaign__launcher-frame{display:block;width:100%;height:100%;border:0;background:transparent;pointer-events:none;transform-origin:50% 50%;animation:jh-fc-launcher-auto-attention 3s ease-in-out infinite;transition:transform .18s ease,filter .18s ease}
+@media(hover:hover) and (pointer:fine){.jh-floating-campaign__launcher:hover .jh-floating-campaign__launcher-frame{animation:jh-fc-launcher-hover-rock .52s ease-in-out both;filter:brightness(1.06)}}
+.jh-floating-campaign__launcher.is-touch-attention .jh-floating-campaign__launcher-frame{animation:jh-fc-launcher-hover-rock .52s ease-in-out both;filter:brightness(1.06)}
+@keyframes jh-fc-launcher-auto-attention{0%,81%,100%{transform:translateY(0) rotate(0deg) scale(1);filter:brightness(1)}84%{transform:translateY(-2px) rotate(-2deg) scale(1.015);filter:brightness(1.03)}87%{transform:translateY(-2px) rotate(2deg) scale(1.015);filter:brightness(1.03)}90%{transform:translateY(-2px) rotate(-1.4deg) scale(1.015);filter:brightness(1.03)}93%{transform:translateY(-2px) rotate(1deg) scale(1.015);filter:brightness(1.03)}96%{transform:translateY(-1px) rotate(-.4deg) scale(1.008);filter:brightness(1.02)}}
+@keyframes jh-fc-launcher-hover-rock{0%{transform:translateY(0) rotate(0deg) scale(1)}18%{transform:translateY(-3px) rotate(-4deg) scale(1.03)}36%{transform:translateY(-3px) rotate(4deg) scale(1.03)}54%{transform:translateY(-3px) rotate(-2.8deg) scale(1.03)}72%{transform:translateY(-3px) rotate(2deg) scale(1.03)}88%{transform:translateY(-3px) rotate(-.8deg) scale(1.03)}100%{transform:translateY(-3px) rotate(0deg) scale(1.03)}}
+.jh-floating-campaign__launcher-hit-area{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;padding:0;border:0;background:transparent;color:transparent;cursor:pointer;touch-action:manipulation}
+.jh-floating-campaign__launcher-hit-area:focus-visible{outline-offset:3px}
+.jh-floating-campaign__control{position:absolute;top:7px;z-index:3;display:grid;width:28px;height:28px;place-items:center;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:#111;font:400 24px/1 Arial,sans-serif;cursor:pointer;touch-action:manipulation;transition:opacity .16s ease,transform .16s ease}
+.jh-floating-campaign__control:hover{opacity:.58;transform:scale(1.08)}
+.jh-floating-campaign__control:focus-visible{outline:2px solid #111;outline-offset:2px}
+.jh-floating-campaign__dismiss{right:7px}
+.jh-floating-campaign[data-display-mode="banner"] .jh-floating-campaign__launcher{display:none}
+.jh-floating-campaign[data-display-mode="expandable_button"] .jh-floating-campaign__panel[hidden]{display:none}
+@media(max-width:1024px){.jh-floating-campaign{--jh-fc-bottom:72px}.jh-floating-campaign__launcher{max-width:calc(100vw - 24px)}}
+@media(prefers-reduced-motion:reduce){.jh-floating-campaign__panel{transition:none}.jh-floating-campaign__launcher-frame,.jh-floating-campaign__launcher:hover .jh-floating-campaign__launcher-frame,.jh-floating-campaign__launcher.is-touch-attention .jh-floating-campaign__launcher-frame{animation:none;transition:none;transform:none;filter:none}.jh-floating-campaign__control{transition:none}}

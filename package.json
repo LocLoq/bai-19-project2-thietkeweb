@@ -1,0 +1,7 @@
+{
+  "name": "jhfigure-local-clone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local static replica of the JH Figure storefront",
+  "scripts": { "start": "node scripts/serve.mjs", "check": "node --check app.js" }
+}
